@@ -1,0 +1,15 @@
+import { ApiProperty } from '@nestjs/swagger';
+
+export class CreateChatroomDto {
+  @ApiProperty({
+    description: 'The ID of the first user in the chatroom',
+    example: 1,
+  })
+  user1Id: number;
+
+  @ApiProperty({
+    description: 'The ID of the second user in the chatroom',
+    example: 2,
+  })
+  user2Id: number;
+}
