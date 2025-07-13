@@ -25,7 +25,7 @@ import { MessageModule } from './message/message.module';
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_DATABASE'),
         entities: [User, Chatroom, Message],
-        synchronize: true, // 개발 환경에서만 true
+        synchronize: false, // 개발 환경에서만 true
       }),
       inject: [ConfigService],
     }),
