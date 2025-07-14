@@ -46,4 +46,14 @@ export class UserService {
       throw new NotFoundException(`User with ID #${id} not found`);
     }
   }
+
+  async findOrCreateUser(createUserDto: CreateUserDto): Promise<User> {
+    let user = await this.userRepository.findOne({
+      where: { email: createUserDto.email },
+    });
+    if (!user) {
+      user = await this.create(createUserDto);
+    }
+    return user;
+  }
 }

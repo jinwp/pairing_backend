@@ -9,29 +9,30 @@ import { Chatroom } from './chatroom/entities/chatroom.entity';
 import { Message } from './message/entities/message.entity';
 import { ChatroomModule } from './chatroom/chatroom.module';
 import { MessageModule } from './message/message.module';
+import { LocationModule } from './location/location.module';
+import { RedisModule } from './redis/redis.module';
+import { Location } from './location/entities/location.entity';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
-        type: 'postgres',
-        host: configService.get<string>('DB_HOST'),
-        port: configService.get<number>('DB_PORT'),
-        username: configService.get<string>('DB_USERNAME'),
-        password: configService.get<string>('DB_PASSWORD'),
-        database: configService.get<string>('DB_DATABASE'),
-        entities: [User, Chatroom, Message],
-        synchronize: false, // 개발 환경에서만 true
-      }),
-      inject: [ConfigService],
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      host: 'localhost',
+      port: 5432,
+      username: 'pairing_user',
+      password: '3775yahj@',
+      database: 'pairing_db',
+      entities: [User, Chatroom, Message, Location],
+      synchronize: false,
     }),
     UserModule,
     ChatroomModule,
     MessageModule,
+    LocationModule,
+    RedisModule,
   ],
   controllers: [AppController],
   providers: [AppService],
