@@ -17,5 +17,6 @@ import { UserModule } from '../user/user.module';
   ],
   controllers: [LocationController],
   providers: [LocationService],
+  exports: [LocationService],
 })
 export class LocationModule {}

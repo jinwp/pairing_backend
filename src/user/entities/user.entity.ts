@@ -5,11 +5,20 @@ export class User {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({ type: 'text', unique: true })
+    @Column({ type: 'bigint', unique: true, nullable: true })
+    kakaoId: number;
+
+    @Column({ type: 'text', unique: true, nullable: true })
     email: string;
+
+    @Column({ type: 'varchar', length: 255, nullable: true })
+    password?: string;
 
     @Column({ type: 'varchar', length: 30 })
     username: string;
+
+    @Column({ type: 'text', nullable: true })
+    profileImage: string;
 
     @Column({ type: 'int' })
     age: number;

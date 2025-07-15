@@ -14,6 +14,7 @@ import { LocationModule } from './location/location.module';
 import { AuthModule } from './auth/auth.module';
 import { RedisModule } from './redis/redis.module';
 import { Location } from './location/entities/location.entity';
+import { LoveAlarmModule } from './love-alarm/love-alarm.module';
 
 @Module({
   imports: [
@@ -53,6 +54,7 @@ import { Location } from './location/entities/location.entity';
     LocationModule,
     RedisModule,
     AuthModule,
+    LoveAlarmModule,
   ],
   controllers: [AppController],
   providers: [AppService],
