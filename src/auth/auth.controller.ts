@@ -28,8 +28,9 @@ export class AuthController {
 
   @Post('login')
   async login(@Body() body: any) {
-    const { email } = body;
-    const user = await this.authService.login(email);
+    console.log('Login request body:', body);
+    const { email, password } = body;
+    const user = await this.authService.login(email, password);
     if (!user) {
       return { message: 'Login failed' };
     }

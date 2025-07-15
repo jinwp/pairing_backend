@@ -5,6 +5,7 @@ import {
   ManyToOne,
   JoinColumn,
   OneToMany,
+  Column,
 } from 'typeorm';
 import { User } from '../../user/entities/user.entity';
 import { Message } from '../../message/entities/message.entity';
@@ -13,6 +14,9 @@ import { Message } from '../../message/entities/message.entity';
 export class Chatroom {
   @PrimaryGeneratedColumn()
   id: number;
+
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  name: string;
 
   @ManyToOne(() => User, { eager: true })
   @JoinColumn({ name: 'user1_id' })

@@ -38,12 +38,19 @@ export class AuthService {
     }
   }
 
-  async login(email: string): Promise<any> {
+  async login(email: string, pass: string): Promise<any> {
+    console.log('Login attempt with email:', email, 'and password:', pass);
     const user = await this.userService.findByEmail(email);
     if (!user) {
+      console.log('User not found');
       return null;
     }
-    // we are not validating password for now
+    console.log('User found:', user);
+    if (user.password !== pass) {
+      console.log('Password does not match');
+      return null;
+    }
+    console.log('Login successful');
     return user;
   }
 }
