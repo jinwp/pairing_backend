@@ -10,6 +10,7 @@ import { Message } from './message/entities/message.entity';
 import { ChatroomModule } from './chatroom/chatroom.module';
 import { MessageModule } from './message/message.module';
 import { LocationModule } from './location/location.module';
+import { AuthModule } from './auth/auth.module';
 import { RedisModule } from './redis/redis.module';
 import { Location } from './location/entities/location.entity';
 
@@ -18,17 +19,6 @@ import { Location } from './location/entities/location.entity';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-<<<<<<< HEAD
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'pairing_user',
-      password: '3775yahj@',
-      database: 'pairing_db',
-      entities: [User, Chatroom, Message, Location],
-      synchronize: false,
-=======
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => {
@@ -54,13 +44,13 @@ import { Location } from './location/entities/location.entity';
         return dbConfig;
       },
       inject: [ConfigService],
->>>>>>> 095fc1f (add cloudbild.yaml)
     }),
     UserModule,
     ChatroomModule,
     MessageModule,
     LocationModule,
     RedisModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
