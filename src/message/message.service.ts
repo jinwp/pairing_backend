@@ -37,7 +37,15 @@ export class MessageService {
       message,
     });
 
-    return this.messageRepository.save(newMessage);
+    const savedMessage = await this.messageRepository.save(newMessage);
+    const messageWithSender = await this.messageRepository.findOne({
+      where: { id: savedMessage.id },
+      relations: ['sender'],
+    });
+    if (!messageWithSender) {
+      throw new NotFoundException(`Message with ID #${savedMessage.id} not found after creation`);
+    }
+    return messageWithSender;
   }
 
   async findAllByChatroom(chatroomId: number): Promise<Message[]> {

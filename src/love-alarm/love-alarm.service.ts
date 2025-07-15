@@ -38,6 +38,7 @@ export class LoveAlarmService {
       }
       // Mutual love detected, create a chatroom
       const userIds = [currentUser.id, lovedUser.id].sort();
+      await new Promise(resolve => setTimeout(resolve, Math.random() * 1000));
       const existingChatroom = await this.chatroomService.findByUserIds(
         userIds[0],
         userIds[1],
