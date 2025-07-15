@@ -25,4 +25,14 @@ export class AuthController {
   async googleAuthLogin(@Body('token') token: string) {
     return this.authService.googleLogin(token);
   }
+
+  @Post('login')
+  async login(@Body() body: any) {
+    const { email } = body;
+    const user = await this.authService.login(email);
+    if (!user) {
+      return { message: 'Login failed' };
+    }
+    return user;
+  }
 }

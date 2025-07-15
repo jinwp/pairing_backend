@@ -37,4 +37,13 @@ export class AuthService {
       return { isNewUser: true, user: { email, username } };
     }
   }
+
+  async login(email: string): Promise<any> {
+    const user = await this.userService.findByEmail(email);
+    if (!user) {
+      return null;
+    }
+    // we are not validating password for now
+    return user;
+  }
 }
