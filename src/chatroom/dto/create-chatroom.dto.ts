@@ -2,12 +2,6 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateChatroomDto {
   @ApiProperty({
-    description: 'The name of the chatroom',
-    example: 'userA & userB',
-  })
-  name: string;
-
-  @ApiProperty({
     description: 'The ID of the first user in the chatroom',
     example: 1,
   })

@@ -22,12 +22,10 @@ export class MatchingService {
       const lovedUser = await this.userRepository.findOne({ where: { id: user.love } });
       if (lovedUser && lovedUser.love === user.id) {
         // Match found!
-        const chatroomName = `${user.username} & ${lovedUser.username}`;
-        const existingChatroom = await this.chatroomService.findByName(chatroomName);
+        const existingChatroom = await this.chatroomService.findByUserIds(user.id, lovedUser.id);
 
         if (!existingChatroom) {
           await this.chatroomService.create({
-            name: chatroomName,
             user1Id: user.id,
             user2Id: lovedUser.id,
           });

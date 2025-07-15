@@ -64,3 +64,5 @@ export class AuthService {
       profileImage,
       email: `${id}@kakao.com`,
     });
+  }
+}
