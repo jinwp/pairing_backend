@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../user/entities/user.entity';
@@ -33,6 +33,9 @@ export class LoveAlarmService {
     });
 
     if (lovedUser && lovedUser.love && lovedUser.love.id === currentUser.id) {
+      if (currentUser.id === lovedUser.id) {
+        return null;
+      }
       // Mutual love detected, create a chatroom
       const existingChatroom = await this.chatroomService.findByUserIds(
         currentUser.id,

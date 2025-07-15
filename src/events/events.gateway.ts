@@ -41,8 +41,10 @@ export class EventsGateway
 
   @SubscribeMessage('checkForMatch')
   async handleCheckForMatch(client: Socket, userId: number) {
+    this.logger.log(`Checking for match for user: ${userId}`);
     const match = await this.loveAlarmService.checkForMatch(userId);
     if (match) {
+      this.logger.log(`Match found for user: ${userId}, match: ${JSON.stringify(match)}`);
       this.server.to(String(userId)).emit('matchFound', match);
       this.server.to(String(match.user2.id)).emit('matchFound', match);
     }
