@@ -33,9 +33,12 @@ export class EventsGateway
 
   handleConnection(client: Socket, ...args: any[]) {
     this.logger.log(`Client connected: ${client.id}`);
-    const { userId } = client.handshake.query;
+    const { userId, chatroomId } = client.handshake.query;
     if (userId) {
-      client.join(userId);
+      client.join(String(userId));
+    }
+    if (chatroomId) {
+      client.join(String(chatroomId));
     }
   }
 
@@ -53,10 +56,5 @@ export class EventsGateway
   @SubscribeMessage('sendMessage')
   handleSendMessage(client: Socket, message: any): void {
     this.server.to(String(message.chatroomId)).emit('newMessage', message);
-  }
-
-  @SubscribeMessage('joinRoom')
-  handleJoinRoom(client: Socket, chatroomId: string): void {
-    client.join(chatroomId);
   }
 }
