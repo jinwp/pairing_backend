@@ -15,6 +15,9 @@ COPY . .
 # Build the application
 RUN npm run build
 
+# 디버깅을 위해 빌드 후 파일 목록을 출력합니다.
+RUN ls -la
+
 # Stage 2: Create the production image
 FROM node:20-alpine
 
@@ -30,4 +33,4 @@ COPY --from=builder /usr/src/app/dist ./dist
 EXPOSE 3000
 
 # Define the command to run the app
-CMD ["node", "dist/main.js"] 
+CMD ["node", "dist/main.js"]
