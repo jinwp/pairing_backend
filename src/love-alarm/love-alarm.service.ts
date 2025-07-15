@@ -4,15 +4,52 @@ import { Repository } from 'typeorm';
 import { User } from '../user/entities/user.entity';
 import { LocationService } from '../location/location.service';
 import { UserService } from '../user/user.service';
+import { ChatroomService } from '../chatroom/chatroom.service';
+import { Chatroom } from 'src/chatroom/entities/chatroom.entity';
 
 @Injectable()
 export class LoveAlarmService {
   constructor(
     private readonly locationService: LocationService,
     private readonly userService: UserService,
+    private readonly chatroomService: ChatroomService,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
   ) {}
+
+  async checkForMatch(userId: number): Promise<Chatroom | null> {
+    const currentUser = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: ['love'],
+    });
+
+    if (!currentUser || !currentUser.love) {
+      return null;
+    }
+
+    const lovedUser = await this.userRepository.findOne({
+      where: { id: currentUser.love.id },
+      relations: ['love'],
+    });
+
+    if (lovedUser && lovedUser.love && lovedUser.love.id === currentUser.id) {
+      // Mutual love detected, create a chatroom
+      const existingChatroom = await this.chatroomService.findByUserIds(
+        currentUser.id,
+        lovedUser.id,
+      );
+      if (existingChatroom) {
+        return existingChatroom;
+      }
+      const chatroom = await this.chatroomService.create({
+        user1Id: currentUser.id,
+        user2Id: lovedUser.id,
+      });
+      return chatroom;
+    }
+
+    return null;
+  }
 
   async getLoveAlarmCount(
     userId: number,
@@ -45,7 +82,7 @@ export class LoveAlarmService {
           GROUP BY "userId"
       ) l_latest ON u.id = l_latest."userId"
       INNER JOIN location l ON l_latest."userId" = l."userId" AND l_latest.max_timestamp = l.timestamp
-      WHERE u.love = $1
+      WHERE u."loveId" = $1
       AND ST_DWithin(l.point, ST_GeomFromText($2, 4326), $3);
     `;
 
