@@ -4,11 +4,15 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { User } from './entities/user.entity';
+import { ChatroomService } from '../chatroom/chatroom.service';
 
 @ApiTags('user')
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly chatroomService: ChatroomService,
+  ) {}
 
   @Post()
   @ApiOperation({ summary: 'Create a new user', description: '새로운 사용자를 생성합니다.' })
@@ -25,6 +29,15 @@ export class UserController {
     return this.userService.findAll();
   }
 
+  @Get('by-name/:name')
+  @ApiOperation({ summary: 'Get a user by name', description: '이름으로 특정 사용자를 조회합니다.' })
+  @ApiParam({ name: 'name', description: 'The name of the user', type: String })
+  @ApiResponse({ status: 200, description: 'Return the user.', type: User })
+  @ApiResponse({ status: 404, description: 'User not found.' })
+  findByName(@Param('name') name: string) {
+    return this.userService.findByName(name);
+  }
+
   @Get(':id')
   @ApiOperation({ summary: 'Get a user by ID', description: 'ID로 특정 사용자를 조회합니다.' })
   @ApiParam({ name: 'id', description: 'The ID of the user', type: Number })
@@ -39,8 +52,22 @@ export class UserController {
   @ApiParam({ name: 'id', description: 'The ID of the user', type: Number })
   @ApiResponse({ status: 200, description: 'The user has been successfully updated.', type: User })
   @ApiResponse({ status: 404, description: 'User not found.' })
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
+  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    const updatedUser = await this.userService.update(+id, updateUserDto);
+    if (updateUserDto.love) {
+      const currentUser = await this.userService.findOne(+id);
+      const lovedUser = await this.userService.findOne(updateUserDto.love);
+
+      if (lovedUser && lovedUser.love === currentUser.id) {
+        // Match found, create a chatroom
+        const chatroom = await this.chatroomService.create({
+          user1Id: currentUser.id,
+          user2Id: lovedUser.id,
+        });
+        // TODO: Add logic to delete chatroom after 24 hours
+      }
+    }
+    return updatedUser;
   }
 
   @Delete(':id')

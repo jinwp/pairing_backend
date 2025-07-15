@@ -12,6 +12,7 @@ export class LoveAlarmController {
   @ApiOperation({
     summary: 'Get the count of users who love you within a certain radius',
   })
+
   async getLoveAlarmCount(
     @Body() loveAlarmDto: LoveAlarmDto,
   ): Promise<{ count: number }> {

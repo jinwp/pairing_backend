@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Cron } from '@nestjs/schedule';
 import { Repository } from 'typeorm';
 import { CreateChatroomDto } from './dto/create-chatroom.dto';
 import { UpdateChatroomDto } from './dto/update-chatroom.dto';
@@ -64,5 +65,17 @@ export class ChatroomService {
       throw new NotFoundException(`Chatroom with ID #${id} not found`);
     }
   }
-}
 
+  @Cron('0 * * * *') // Runs every hour
+  async handleCron() {
+    const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    const expiredChatrooms = await this.chatroomRepository
+      .createQueryBuilder('chatroom')
+      .where('chatroom.created_at < :date', { date: twentyFourHoursAgo })
+      .getMany();
+
+    for (const chatroom of expiredChatrooms) {
+      await this.chatroomRepository.remove(chatroom);
+    }
+  }
+}
