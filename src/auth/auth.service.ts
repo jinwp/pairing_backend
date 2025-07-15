@@ -11,17 +11,16 @@ export class AuthService {
   ) {}
 
   async login(email: string, pass: string): Promise<any> {
-    console.log('Login attempt with email:', email, 'and password:', pass);
     const user = await this.userService.findByEmail(email);
     if (!user) {
-      console.log('User not found');
-      return null;
+      throw new UnauthorizedException('Invalid credentials');
     }
-    console.log('User found:', user);
+    // TODO: Implement password hashing
     if (user.password !== pass) {
-      console.log('Password does not match');
-      return null;
+      throw new UnauthorizedException('Invalid credentials');
     }
+    const { password, ...result } = user;
+    return result;
   }
 
   async kakaoLogin(code: string): Promise<any> {
