@@ -37,16 +37,17 @@ export class LoveAlarmService {
         return null;
       }
       // Mutual love detected, create a chatroom
+      const userIds = [currentUser.id, lovedUser.id].sort();
       const existingChatroom = await this.chatroomService.findByUserIds(
-        currentUser.id,
-        lovedUser.id,
+        userIds[0],
+        userIds[1],
       );
       if (existingChatroom) {
         return existingChatroom;
       }
       const chatroom = await this.chatroomService.create({
-        user1Id: currentUser.id,
-        user2Id: lovedUser.id,
+        user1Id: userIds[0],
+        user2Id: userIds[1],
       });
       return chatroom;
     }
