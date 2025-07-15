@@ -17,6 +17,14 @@ export class UserService {
     return this.userRepository.save(user);
   }
 
+  async findUserByKakaoId(kakaoId: number): Promise<User | null> {
+    return this.userRepository.findOne({ where: { kakaoId } });
+  }
+
+  async findByEmail(email: string): Promise<User | null> {
+    return this.userRepository.findOne({ where: { email } });
+  }
+
   async findAll(): Promise<User[]> {
     return this.userRepository.find();
   }

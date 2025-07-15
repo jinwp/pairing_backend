@@ -10,6 +10,6 @@ export default new DataSource({
   username: 'pairing_user',
   password: '3775yahj@',
   database: 'pairing_db',
-  entities: ['dist/**/*.entity.js'],
+  entities: ['src/**/*.entity.ts'],
   migrations: ['src/migrations/*.ts'],
 });
