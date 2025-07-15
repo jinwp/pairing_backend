@@ -1,6 +1,6 @@
-import {Entity, PrimaryGeneratedColumn, Column, CreateDateColumn} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
 
-@Entity('users') // DB 테이블 이름 
+@Entity('users') // DB 테이블 이름
 export class User {
     @PrimaryGeneratedColumn()
     id: number;
@@ -32,8 +32,9 @@ export class User {
     @Column({ type: 'text', nullable: true })
     comment: string;
 
-    @Column({ type: 'int', default: 0 })
-    love: number;
+    @ManyToOne(() => User, { nullable: true })
+    @JoinColumn({ name: 'love' })
+    love: User;
 
     @CreateDateColumn({ type: 'timestamp' })
     created_at: Date;

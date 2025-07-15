@@ -5,9 +5,15 @@ import { LoveAlarmService } from './love-alarm.service';
 import { User } from '../user/entities/user.entity';
 import { LocationModule } from '../location/location.module';
 import { UserModule } from '../user/user.module';
+import { ChatroomModule } from '../chatroom/chatroom.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User]), LocationModule, UserModule],
+  imports: [
+    TypeOrmModule.forFeature([User]),
+    LocationModule,
+    UserModule,
+    ChatroomModule,
+  ],
   controllers: [LoveAlarmController],
   providers: [LoveAlarmService],
 })
