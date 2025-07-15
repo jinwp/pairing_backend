@@ -11,13 +11,17 @@ export class AuthService {
   ) {}
 
   async login(email: string, pass: string): Promise<any> {
+    console.log('Login attempt with email:', email, 'and password:', pass);
     const user = await this.userService.findByEmail(email);
-    if (!user || user.password !== pass) {
-      throw new UnauthorizedException('Invalid credentials');
+    if (!user) {
+      console.log('User not found');
+      return null;
     }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password, ...result } = user;
-    return result;
+    console.log('User found:', user);
+    if (user.password !== pass) {
+      console.log('Password does not match');
+      return null;
+    }
   }
 
   async kakaoLogin(code: string): Promise<any> {
@@ -60,7 +64,3 @@ export class AuthService {
       profileImage,
       email: `${id}@kakao.com`,
     });
-
-    return user;
-  }
-}
