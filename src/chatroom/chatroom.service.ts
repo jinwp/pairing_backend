@@ -17,7 +17,7 @@ export class ChatroomService {
   ) {}
 
   async create(createChatroomDto: CreateChatroomDto): Promise<Chatroom> {
-    const { name, user1Id, user2Id } = createChatroomDto;
+    const { user1Id, user2Id } = createChatroomDto;
 
     // 1. 두 사용자가 실제로 존재하는지 확인합니다.
     const user1 = await this.userRepository.findOne({ where: { id: user1Id } });
@@ -29,7 +29,6 @@ export class ChatroomService {
 
     // 2. 새로운 채팅방 객체를 만듭니다.
     const newChatroom = this.chatroomRepository.create({
-      name,
       user1,
       user2,
     });
@@ -43,8 +42,13 @@ export class ChatroomService {
     return this.chatroomRepository.find({ relations: ['user1', 'user2'] });
   }
 
-  async findByName(name: string): Promise<Chatroom | null> {
-    return this.chatroomRepository.findOne({ where: { name } });
+  async findByUserIds(user1Id: number, user2Id: number): Promise<Chatroom | null> {
+    return this.chatroomRepository.findOne({
+      where: [
+        { user1: { id: user1Id }, user2: { id: user2Id } },
+        { user1: { id: user2Id }, user2: { id: user1Id } },
+      ],
+    });
   }
 
   // 특정 ID의 채팅방의 user 정보를 포함하여 반환합니다.
