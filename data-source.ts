@@ -1,15 +1,15 @@
 import { DataSource } from 'typeorm';
+import * as dotenv from 'dotenv';
 
-// .env is no longer used for this file.
-// All configurations are hardcoded to match app.module.ts
+dotenv.config();
 
 export default new DataSource({
   type: 'postgres',
-  host: 'localhost',
-  port: 5432,
-  username: 'pairing_user',
-  password: '3775yahj@',
-  database: 'pairing_db',
+  host: process.env.DB_HOST,
+  port: parseInt(process.env.DB_PORT || '5432', 10),
+  username: process.env.DB_USERNAME,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_DATABASE,
   entities: ['dist/**/*.entity.js'],
   migrations: ['src/migrations/*.ts'],
 });
