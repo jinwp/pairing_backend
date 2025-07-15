@@ -8,15 +8,20 @@ import {
 } from '@nestjs/websockets';
 import { Logger } from '@nestjs/common';
 import { Server, Socket } from 'socket.io';
+import { LoveAlarmService } from '../love-alarm/love-alarm.service';
 
 @WebSocketGateway({
   cors: {
     origin: '*',
   },
 })
-export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
+export class EventsGateway
+  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
+{
   @WebSocketServer() server: Server;
   private logger: Logger = new Logger('EventsGateway');
+
+  constructor(private readonly loveAlarmService: LoveAlarmService) {}
 
   afterInit(server: Server) {
     this.logger.log('Init');
@@ -28,10 +33,18 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
   handleConnection(client: Socket, ...args: any[]) {
     this.logger.log(`Client connected: ${client.id}`);
+    const { userId } = client.handshake.query;
+    if (userId) {
+      client.join(userId);
+    }
   }
 
-  @SubscribeMessage('message')
-  handleMessage(client: Socket, payload: string): void {
-    this.server.emit('message', payload);
+  @SubscribeMessage('checkForMatch')
+  async handleCheckForMatch(client: Socket, userId: number) {
+    const match = await this.loveAlarmService.checkForMatch(userId);
+    if (match) {
+      this.server.to(String(userId)).emit('matchFound', match);
+      this.server.to(String(match.user2.id)).emit('matchFound', match);
+    }
   }
 }
