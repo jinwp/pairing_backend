@@ -16,5 +16,6 @@ import { ChatroomModule } from '../chatroom/chatroom.module';
   ],
   controllers: [LoveAlarmController],
   providers: [LoveAlarmService],
+  exports: [LoveAlarmService],
 })
 export class LoveAlarmModule {}

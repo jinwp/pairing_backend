@@ -32,7 +32,10 @@ export class User {
     @Column({ type: 'text', nullable: true })
     comment: string;
 
-    @ManyToOne(() => User, { nullable: true })
+    @ManyToOne(() => User, { 
+        nullable: true,
+        deferrable: 'INITIALLY DEFERRED', 
+    })
     @JoinColumn({ name: 'love' })
     love: User;
 
