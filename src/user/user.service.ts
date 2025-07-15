@@ -13,7 +13,12 @@ export class UserService {
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
-    const user = this.userRepository.create(createUserDto);
+    const { love, ...rest } = createUserDto;
+    const user = this.userRepository.create(rest);
+    if (love) {
+      const lovedUser = await this.findOne(love);
+      user.love = lovedUser;
+    }
     return this.userRepository.save(user);
   }
 
@@ -46,12 +51,17 @@ export class UserService {
   }
 
   async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
+    const { love, ...rest } = updateUserDto;
     const user = await this.userRepository.preload({
       id: id,
-      ...updateUserDto,
+      ...rest,
     });
     if (!user) {
       throw new NotFoundException(`User with ID #${id} not found`);
+    }
+    if (love) {
+      const lovedUser = await this.findOne(love);
+      user.love = lovedUser;
     }
     return this.userRepository.save(user);
   }
