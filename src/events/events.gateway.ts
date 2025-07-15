@@ -49,4 +49,9 @@ export class EventsGateway
       this.server.to(String(match.user2.id)).emit('matchFound', match);
     }
   }
+
+  @SubscribeMessage('sendMessage')
+  handleSendMessage(client: Socket, message: any): void {
+    this.server.to(String(message.chatroomId)).emit('newMessage', message);
+  }
 }
