@@ -54,4 +54,9 @@ export class EventsGateway
   handleSendMessage(client: Socket, message: any): void {
     this.server.to(String(message.chatroomId)).emit('newMessage', message);
   }
+
+  @SubscribeMessage('joinRoom')
+  handleJoinRoom(client: Socket, chatroomId: string): void {
+    client.join(chatroomId);
+  }
 }
