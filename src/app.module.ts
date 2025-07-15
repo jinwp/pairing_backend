@@ -15,7 +15,6 @@ import { AuthModule } from './auth/auth.module';
 import { RedisModule } from './redis/redis.module';
 import { Location } from './location/entities/location.entity';
 import { LoveAlarmModule } from './love-alarm/love-alarm.module';
-import { MatchingModule } from './matching/matching.module';
 
 @Module({
   imports: [
@@ -56,7 +55,6 @@ import { MatchingModule } from './matching/matching.module';
     RedisModule,
     AuthModule,
     LoveAlarmModule,
-    MatchingModule,
   ],
   controllers: [AppController],
   providers: [AppService],
