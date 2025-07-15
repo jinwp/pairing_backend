@@ -53,21 +53,7 @@ export class UserController {
   @ApiResponse({ status: 200, description: 'The user has been successfully updated.', type: User })
   @ApiResponse({ status: 404, description: 'User not found.' })
   async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    const updatedUser = await this.userService.update(+id, updateUserDto);
-    if (updateUserDto.love) {
-      const currentUser = await this.userService.findOne(+id);
-      const lovedUser = await this.userService.findOne(updateUserDto.love);
-
-      if (lovedUser && lovedUser.love === currentUser.id) {
-        // Match found, create a chatroom
-        const chatroom = await this.chatroomService.create({
-          user1Id: currentUser.id,
-          user2Id: lovedUser.id,
-        });
-        // TODO: Add logic to delete chatroom after 24 hours
-      }
-    }
-    return updatedUser;
+    return this.userService.update(+id, updateUserDto);
   }
 
   @Delete(':id')
