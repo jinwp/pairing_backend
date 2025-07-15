@@ -1,39 +1,28 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
-import { Request } from 'express';
+import { Controller, Get, Query, Res, Post, Body } from '@nestjs/common';
 import { AuthService } from './auth.service';
+import { Response } from 'express';
+import { LoginDto } from './dto/login.dto';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
-  @Get('google')
-  @UseGuards(AuthGuard('google'))
-  async googleAuth() {
-    // automatically redirects to Google login page
-  }
-
-  @Get('google/redirect')
-  @UseGuards(AuthGuard('google'))
-  async googleAuthRedirect(@Req() req: Request) {
-    return {
-      message: 'Login successful',
-      user: req.user,
-    };
-  }
-
-  @Post('google/login')
-  async googleAuthLogin(@Body('token') token: string) {
-    return this.authService.googleLogin(token);
-  }
 
   @Post('login')
-  async login(@Body() body: any) {
-    console.log('Login request body:', body);
-    const { email, password } = body;
-    const user = await this.authService.login(email, password);
+  async login(@Body() loginDto: LoginDto) {
+    const user = await this.authService.login(loginDto.email, loginDto.password);
     if (!user) {
       return { message: 'Login failed' };
     }
     return user;
+  }
+  
+  @Get('/kakao/callback')
+  async kakaoCallback(
+    @Query('code') code: string,
+    @Res() res: Response,
+  ): Promise<void> {
+    const user = await this.authService.kakaoLogin(code);
+    // res.redirect('http://localhost:3000');
+    res.send(user);
   }
 }
