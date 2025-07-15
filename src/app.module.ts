@@ -15,6 +15,8 @@ import { AuthModule } from './auth/auth.module';
 import { RedisModule } from './redis/redis.module';
 import { Location } from './location/entities/location.entity';
 import { LoveAlarmModule } from './love-alarm/love-alarm.module';
+import { EventsGateway } from './events/events.gateway';
+import { EventsModule } from './events/events.module';
 
 @Module({
   imports: [
@@ -55,8 +57,9 @@ import { LoveAlarmModule } from './love-alarm/love-alarm.module';
     RedisModule,
     AuthModule,
     LoveAlarmModule,
+    EventsModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, EventsGateway],
 })
 export class AppModule {}

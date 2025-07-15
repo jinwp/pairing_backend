@@ -14,7 +14,6 @@ export class Chatroom {
   @PrimaryGeneratedColumn()
   id: number;
 
-
   @ManyToOne(() => User, { eager: true })
   @JoinColumn({ name: 'user1_id' })
   user1: User;
