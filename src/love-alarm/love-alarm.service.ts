@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../user/entities/user.entity';
@@ -106,11 +106,19 @@ export class LoveAlarmService {
     targetId: number,
     latitude: number,
     longitude: number,
-    radius = 3,                             // metres
+    radius = 50,                             // metres
   ): Promise<number> {
     // ① current position of target (given by mobile)
     const targetPoint = `SRID=4326;POINT(${longitude} ${latitude})`;
+    const targetUser = await this.userRepository.findOneBy({ id: targetId });
 
+      // 2) 없으면 즉시 예외
+      if (!targetUser) {
+        throw new NotFoundException(`User ${targetId} not found`);
+      }
+
+      // 3) 위치 저장 — 이제 targetUser 타입은 User
+      await this.locationService.addLocation(targetUser, latitude, longitude);
     // ② who loves the target AND is inside radius?
     //    ST_DWithin expects geography for metre units
     return this.userRepository

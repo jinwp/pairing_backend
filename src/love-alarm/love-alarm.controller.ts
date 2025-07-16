@@ -8,10 +8,10 @@ import { ApiTags, ApiOperation } from '@nestjs/swagger';
 export class LoveAlarmController {
   constructor(private readonly loveAlarmService: LoveAlarmService) {}
 
-  @Post()
-  @ApiOperation({
-    summary: 'Get the count of users who love you within a certain radius',
-  })
+  // @Post()
+  // @ApiOperation({
+  //   summary: 'Get the count of users who love you within a certain radius',
+  // })
 
   // async getLoveAlarmCount(
   //   @Body() loveAlarmDto: LoveAlarmDto,
