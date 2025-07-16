@@ -27,20 +27,26 @@ export class EventsGateway
     this.logger.log('Init');
   }
 
+  handleConnection(client: Socket): void {
+    const { userId } = client.handshake.query;
+    if (userId) client.join(String(userId));
+    this.logger.log(`Client ${client.id} connected (user ${userId})`);
+  }
+
   handleDisconnect(client: Socket) {
     this.logger.log(`Client disconnected: ${client.id}`);
   }
 
-  handleConnection(client: Socket, ...args: any[]) {
-    this.logger.log(`Client connected: ${client.id}`);
-    const { userId, chatroomId } = client.handshake.query;
-    if (userId) {
-      client.join(String(userId));
-    }
-    if (chatroomId) {
-      client.join(String(chatroomId));
-    }
-  }
+  // handleConnection(client: Socket, ...args: any[]) {
+  //   this.logger.log(`Client connected: ${client.id}`);
+  //   const { userId, chatroomId } = client.handshake.query;
+  //   if (userId) {
+  //     client.join(String(userId));
+  //   }
+  //   if (chatroomId) {
+  //     client.join(String(chatroomId));
+  //   }
+  // }
 
   @SubscribeMessage('checkForMatch')
   async handleCheckForMatch(client: Socket, userId: number) {
@@ -51,6 +57,14 @@ export class EventsGateway
       this.server.to(String(userId)).emit('matchFound', match);
       this.server.to(String(match.user2.id)).emit('matchFound', match);
     }
+  }
+
+  @SubscribeMessage('joinRoom')
+  handleJoinRoom(client: Socket, payload: { chatroomId: string }): void {
+    const { chatroomId } = payload;
+    if (!chatroomId) return;
+    client.join(String(chatroomId));
+    this.logger.log(`Socket ${client.id} joined chatroom ${chatroomId}`);
   }
 
   @SubscribeMessage('sendMessage')
